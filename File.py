@@ -1,57 +1,45 @@
 import sqlite3
 
-# Единое соединение с базой данных
-connection = sqlite3.connect('my_database.db')
+# Устанавливаем соединение с базой данных
+connection = sqlite3.connect('tasks.db')
 cursor = connection.cursor()
 
-# 1. Создаем таблицу Users (с колонкой is_active)
+# Создаем таблицу Tasks
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS Users (
+    CREATE TABLE IF NOT EXISTS Tasks (
         id INTEGER PRIMARY KEY,
-        username TEXT NOT NULL,
-        email TEXT NOT NULL,
-        age INTEGER,
-        is_active BOOLEAN DEFAULT 1,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        title TEXT NOT NULL,
+        status TEXT DEFAULT 'Not Started'
     )
 ''')
 
-# 2. Создаем индекс для столбца "username"
-cursor.execute('CREATE INDEX IF NOT EXISTS idx_username ON Users (username)')
+# Функция для добавления новой задачи
+def add_task(title):
+    cursor.execute('INSERT INTO Tasks (title) VALUES (?)', (title,))
+    connection.commit()
 
-# 3. Создаем представление для активных пользователей
-cursor.execute('''
-    CREATE VIEW IF NOT EXISTS ActiveUsers AS 
-    SELECT * FROM Users WHERE is_active = 1
-''')
+# Функция для обновления статуса задачи
+def update_task_status(task_id, status):
+    cursor.execute('UPDATE Tasks SET status = ? WHERE id = ?', (status, task_id))
+    connection.commit()
 
-# 4. Создаем триггер (исправленный)
-cursor.execute('''
-    CREATE TRIGGER IF NOT EXISTS update_created_at 
-    AFTER INSERT ON Users 
-    BEGIN 
-        UPDATE Users SET created_at = CURRENT_TIMESTAMP 
-        WHERE id = NEW.id AND NEW.created_at IS NULL; 
-    END;
-''')
+# Функция для вывода списка задач
+def list_tasks():
+    cursor.execute('SELECT * FROM Tasks')
+    tasks = cursor.fetchall()
+    for task in tasks:
+        print(task)
 
-# Сохраняем изменения
-connection.commit()
+# Добавляем задачи
+add_task('Подготовить презентацию')
+add_task('Закончить отчет')
+add_task('Подготовить ужин')
 
-# 5. Подготовленный запрос (после создания таблицы)
-query = 'SELECT * FROM Users WHERE age > ?'
-cursor.execute(query, (25,))
-users = cursor.fetchall()
-print("Пользователи старше 25 лет:")
-for user in users:
-    print(user)
+# Обновляем статус задачи
+update_task_status(2, 'In Progress')
 
-# 6. Запрос через представление
-cursor.execute('SELECT * FROM ActiveUsers')
-active_users = cursor.fetchall()
-print("\nАктивные пользователи:")
-for user in active_users:
-    print(user)
+# Выводим список задач
+list_tasks()
 
 # Закрываем соединение
 connection.close()
