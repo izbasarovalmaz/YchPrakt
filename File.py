@@ -1,53 +1,20 @@
 import sqlite3
 
+# Устанавливаем соединение с базой данных
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
 
-# Подсчет общего числа пользователей
-cursor.execute('SELECT COUNT(*) FROM Users')
-total_users = cursor.fetchone()[0]
+# Находим пользователей с наибольшим возрастом
+cursor.execute('''
+    SELECT username, age 
+    FROM Users 
+    WHERE age = (SELECT MAX(age) FROM Users)
+''')
+oldest_users = cursor.fetchall()
 
-print('Общее количество пользователей:', total_users)
-connection.close()
+# Выводим результаты
+for user in oldest_users:
+    print(user)
 
-
-connection = sqlite3.connect('my_database.db')
-cursor = connection.cursor()
-
-# Вычисление суммы возрастов пользователей
-cursor.execute('SELECT SUM(age) FROM Users')
-total_age = cursor.fetchone()[0]
-
-print('Общая сумма возрастов пользователей:', total_age)
-connection.close()
-
-
-connection = sqlite3.connect('my_database.db')
-cursor = connection.cursor()
-
-# Вычисление среднего возраста пользователей
-cursor.execute('SELECT AVG(age) FROM Users')
-average_age = cursor.fetchone()[0]
-
-print('Средний возраст пользователей:', average_age)
-connection.close()
-
-
-connection = sqlite3.connect('my_database.db')
-cursor = connection.cursor()
-
-# Нахождение минимального возраста
-cursor.execute('SELECT MIN(age) FROM Users')
-min_age = cursor.fetchone()[0]
-
-print('Минимальный возраст среди пользователей:', min_age)
-connection.close()
-
-connection = sqlite3.connect('my_database.db')
-cursor = connection.cursor()
-
-# Нахождение максимального возраста
-cursor.execute('SELECT MAX(age) FROM Users')
-max_age = cursor.fetchone()[0]
-print('Максимальный возраст среди пользователей:', max_age)
+# Закрываем соединение
 connection.close()
