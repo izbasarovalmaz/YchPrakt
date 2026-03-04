@@ -1,16 +1,44 @@
 import sqlite3
 
-# Устанавливаем соединение с базой данных
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
 
-# Выбираем всех пользователей
-cursor.execute('SELECT * FROM Users')
-users = cursor.fetchall()
+# Выбираем имена и возраст пользователей старше 25 лет
+cursor.execute('SELECT username, age FROM Users WHERE age > ?', (25,))
+results = cursor.fetchall()
 
-# Выводим результаты
-for user in users:
-    print(user)
+for row in results:
+    print(row)
 
-# Закрываем соединение
+connection.close()
+
+
+connection = sqlite3.connect('my_database.db')
+cursor = connection.cursor()
+
+# Получаем средний возраст пользователей для каждого возраста
+cursor.execute('SELECT age, AVG(age) FROM Users GROUP BY age')
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
+
+# Фильтруем группы по среднему возрасту больше 30
+cursor.execute('SELECT age, AVG(age) FROM Users GROUP BY age HAVING AVG(age) > ?', (30,))
+filtered_results = cursor.fetchall()
+for row in filtered_results:
+    print(row)
+
+connection.close()
+
+connection = sqlite3.connect('my_database.db')
+cursor = connection.cursor()
+
+# Выбираем и сортируем пользователей по возрасту по убыванию
+cursor.execute('SELECT username, age FROM Users ORDER BY age DESC')
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
+
 connection.close()
