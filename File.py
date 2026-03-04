@@ -4,22 +4,12 @@ import sqlite3
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
 
-# Выбираем всех пользователей
-cursor.execute('SELECT * FROM Users')
-users = cursor.fetchall()
+# Выбираем пользователей с неизвестным возрастом
+cursor.execute('SELECT * FROM Users WHERE age IS NULL')
+unknown_age_users = cursor.fetchall()
 
-# Преобразуем результаты в список словарей
-users_list = []
-for user in users:
-    user_dict = {
-        'id': user[0],
-        'username': user[1],
-        'email': user[2],
-        'age': user[3]
-    }
-    users_list.append(user_dict)
 # Выводим результаты
-for user in users_list:
+for user in unknown_age_users:
     print(user)
 
 # Закрываем соединение
