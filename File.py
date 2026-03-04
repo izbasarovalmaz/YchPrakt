@@ -4,8 +4,33 @@ import sqlite3
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
 
-# Создаем индекс для столбца "email"
-cursor.execute('CREATE INDEX idx_email ON Users (email)')
+# Добавляем нового пользователя
+cursor.execute('INSERT INTO Users (username, email, age) VALUES (?, ?, ?)', 
+               ('newuser', 'newuser@example.com', 28))
+
+# Сохраняем изменения и закрываем соединение
+connection.commit()
+connection.close()
+
+
+# Устанавливаем соединение с базой данных
+connection = sqlite3.connect('my_database.db')
+cursor = connection.cursor()
+
+# Обновляем возраст пользователя "newuser"
+cursor.execute('UPDATE Users SET age = ? WHERE username = ?', (29, 'newuser'))
+
+# Сохраняем изменения и закрываем соединение
+connection.commit()
+connection.close()
+
+
+# Устанавливаем соединение с базой данных
+connection = sqlite3.connect('my_database.db')
+cursor = connection.cursor()
+
+# Удаляем пользователя "newuser"
+cursor.execute('DELETE FROM Users WHERE username = ?', ('newuser',))
 
 # Сохраняем изменения и закрываем соединение
 connection.commit()
