@@ -11,6 +11,17 @@ CREATE TABLE Klients (
 );
 
 
+-- Users определение
+
+CREATE TABLE Users (
+	id INTEGER,
+	login TEXT,
+	parol TEXT,
+	"role" TEXT,
+	CONSTRAINT Users_PK PRIMARY KEY (id)
+);
+
+
 -- Turputevka определение
 
 CREATE TABLE Turputevka (
