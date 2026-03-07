@@ -14,7 +14,8 @@
    <string>Главное окно</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255);</string>
+   <string notr="true">background-color: rgb(255, 255, 255);
+background-color: rgb(170, 170, 127);</string>
   </property>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
